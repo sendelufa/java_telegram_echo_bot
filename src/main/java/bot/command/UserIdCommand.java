@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
  */
 public class UserIdCommand implements Command {
 
-    private final String answerPattern = "Ваш ID: %s";
+    private final String answerPattern = "Ваш ID: `%s`";
 
     private final TelegramClient client;
 
@@ -25,6 +25,7 @@ public class UserIdCommand implements Command {
                 .chatId(senderId)
                 .text(answerPattern.formatted(senderId))
                 .build();
+        sendMessage.enableMarkdown(true);
 
         try {
             client.execute(sendMessage);

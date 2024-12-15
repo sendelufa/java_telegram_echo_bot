@@ -9,9 +9,11 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 public class EchoBot implements LongPollingSingleThreadUpdateConsumer {
 
     private final TelegramClient telegramClient;
+    private final CommandDispatcher commandDispatcher;
 
     public EchoBot(TelegramClient telegramClient) {
         this.telegramClient = telegramClient;
+        this.commandDispatcher = new CommandDispatcher(telegramClient);
     }
 
     @Override
@@ -21,7 +23,13 @@ public class EchoBot implements LongPollingSingleThreadUpdateConsumer {
             return;
         }
 
-        String messageText = update.getMessage().getText();
+        String messageText = update.getMessage().getText().stripLeading();
+
+        if(messageText.startsWith("/")) {
+            commandDispatcher.dispatch(messageText, update);
+            return;
+        }
+
         long chatId = update.getMessage().getChatId();
 
         System.out.println(messageText + "from chatId=" + chatId);
